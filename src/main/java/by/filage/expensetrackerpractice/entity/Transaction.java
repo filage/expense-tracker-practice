@@ -3,12 +3,15 @@ package by.filage.expensetrackerpractice.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.Positive;
+import lombok.Builder;
+import lombok.Getter;
 
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.UUID;
 
+@Getter
 @Entity
 @Table(name = "transactions")
 public class Transaction {
@@ -40,6 +43,7 @@ public class Transaction {
     protected Transaction() {
     }
 
+    @Builder
     public Transaction(TransactionType type, TransactionCategory category, BigDecimal amount, String description, LocalDate transactionDate) {
         id = UUID.randomUUID();
         this.type = type;
@@ -56,33 +60,5 @@ public class Transaction {
         this.amount = amount;
         this.description = description;
         this.transactionDate = transactionDate;
-    }
-
-    public UUID getId() {
-        return id;
-    }
-
-    public Instant getCreatedAt() {
-        return createdAt;
-    }
-
-    public LocalDate getTransactionDate() {
-        return transactionDate;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public BigDecimal getAmount() {
-        return amount;
-    }
-
-    public TransactionCategory getCategory() {
-        return category;
-    }
-
-    public TransactionType getType() {
-        return type;
     }
 }

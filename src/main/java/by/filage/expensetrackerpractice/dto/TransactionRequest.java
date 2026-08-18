@@ -6,10 +6,14 @@ import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+@Getter
+@Setter
 public class TransactionRequest {
     @NotNull(message = "Category must not be null")
     private TransactionCategory category;
@@ -27,44 +31,4 @@ public class TransactionRequest {
 
     @NotNull(message = "Date must not be null")
     private LocalDate transactionDate;
-
-    public void setCategory(TransactionCategory category) {
-        this.category = category;
-    }
-
-    public void setType(TransactionType type) {
-        this.type = type;
-    }
-
-    public void setAmount(BigDecimal amount) {
-        this.amount = amount;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public void setTransactionDate(LocalDate transactionDate) {
-        this.transactionDate = transactionDate;
-    }
-
-    public TransactionCategory getCategory() {
-        return category;
-    }
-
-    public TransactionType getType() {
-        return type;
-    }
-
-    public BigDecimal getAmount() {
-        return amount;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public LocalDate getTransactionDate() {
-        return transactionDate;
-    }
 }
