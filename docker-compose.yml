@@ -1,0 +1,15 @@
+services:
+  postgres:
+    image: postgres:18
+    container_name: expense-tracker-practice
+    environment:
+      POSTGRES_DB: expense_tracker
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: Pg18!Maksi_7qL4xT
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql
+
+volumes:
+  postgres_data:
