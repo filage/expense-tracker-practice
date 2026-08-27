@@ -4,6 +4,7 @@ import by.filage.expensetrackerpractice.dto.TransactionRequest;
 import by.filage.expensetrackerpractice.dto.TransactionResponse;
 import by.filage.expensetrackerpractice.entity.Transaction;
 import by.filage.expensetrackerpractice.exception.TransactionNotFoundException;
+import by.filage.expensetrackerpractice.exception.TransactionTypeMismatchException;
 import by.filage.expensetrackerpractice.mapper.TransactionMapper;
 import by.filage.expensetrackerpractice.repository.TransactionRepository;
 import lombok.AllArgsConstructor;
@@ -20,7 +21,7 @@ public class TransactionService {
 
     public TransactionResponse createTransaction(TransactionRequest request) {
         if (!request.getCategory().getAllowedType().equals(request.getType()))
-            throw new IllegalArgumentException("Category does not match transaction type");
+            throw new TransactionTypeMismatchException();
         return transactionMapper.toResponse(transactionRepository.save(transactionMapper.toEntity(request)));
     }
 
@@ -34,7 +35,7 @@ public class TransactionService {
 
     public TransactionResponse updateTransaction(TransactionRequest request, UUID id) {
         if (!request.getCategory().getAllowedType().equals(request.getType()))
-            throw new IllegalArgumentException("Category does not match transaction type");
+            throw new TransactionTypeMismatchException();
         Transaction transaction = transactionRepository.findById(id).orElseThrow(() -> new TransactionNotFoundException(id));
         transaction.updateTransaction(request.getType(), request.getCategory(), request.getAmount(), request.getDescription(), request.getTransactionDate());
         return transactionMapper.toResponse(transactionRepository.save(transaction));

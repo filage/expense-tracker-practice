@@ -53,4 +53,16 @@ public class GlobalExceptionHandler {
                 errors
         );
     }
+
+    @ExceptionHandler(TransactionTypeMismatchException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiErrorResponse handleTransactionTypeMismatchException(TransactionTypeMismatchException exception, HttpServletRequest request) {
+        return new ApiErrorResponse(
+                exception.getMessage(),
+                HttpStatus.BAD_REQUEST.value(),
+                Instant.now(),
+                request.getRequestURI(),
+                Map.of()
+        );
+    }
 }
