@@ -20,9 +20,9 @@ services:
     build: .
     container_name: expense-tracker-app
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/expense_tracker
-      SPRING_DATASOURCE_USERNAME: postgres
-      SPRING_DATASOURCE_PASSWORD: postgres
+      DB_URL: jdbc:postgresql://postgres:5432/expense_tracker
+      DB_USERNAME: postgres
+      DB_PASSWORD: postgres
       SPRING_JPA_HIBERNATE_DDL_AUTO: validate
       SPRING_LIQUIBASE_CHANGE_LOG: classpath:db/changelog/db.changelog-master.xml
     ports:
