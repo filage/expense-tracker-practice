@@ -37,5 +37,4 @@ out/
 .vscode/
 
 # Local configuration and secrets
-/src/main/resources/application.properties
 .env
