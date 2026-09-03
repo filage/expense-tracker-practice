@@ -18,6 +18,10 @@ public class Transaction {
     @Id
     private UUID id;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "wallet_id")
+    private Wallet wallet;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private TransactionType type;
