@@ -28,6 +28,4 @@ public class TransactionJpqlDao {
                 .setParameter("type", type)
                 .getResultList();
     }
-
-
 }

@@ -1,6 +1,6 @@
 package by.filage.expensetrackerpractice.dao.jdbctemplate;
 
-import by.filage.expensetrackerpractice.dao.result.TransactionJdbcResult;
+import by.filage.expensetrackerpractice.entity.Transaction;
 import by.filage.expensetrackerpractice.entity.TransactionCategory;
 import by.filage.expensetrackerpractice.entity.TransactionType;
 import lombok.RequiredArgsConstructor;
@@ -21,31 +21,31 @@ public class TransactionJdbcTemplateDao {
     private static final String SQL = """
                 SELECT 
                     id,
-                    wallet_id,
                     type,
                     category,
                     amount,
                     description,
-                    transaction_date
+                    transaction_date,
+                    created_at
                 FROM transactions
                 WHERE type = ?
                 AND amount >= ?
                 ORDER BY transaction_date DESC
                 """;
 
-    public List<TransactionJdbcResult> findByTypeAndMinAmount(TransactionType type, BigDecimal minAmount) {
+    public List<Transaction> findByTypeAndMinAmount(TransactionType type, BigDecimal minAmount) {
         return jdbcTemplate.query(SQL, this::mapTransactionResult, type.name(), minAmount);
     }
 
-    private TransactionJdbcResult mapTransactionResult(ResultSet resultSet, int rowNum) throws SQLException {
-        return new TransactionJdbcResult(
+    private Transaction mapTransactionResult(ResultSet resultSet, int rowNum) throws SQLException {
+        return new Transaction(
                 resultSet.getObject("id", UUID.class),
-                resultSet.getObject("wallet_id", UUID.class),
                 TransactionType.valueOf(resultSet.getString("type")),
                 TransactionCategory.valueOf(resultSet.getString("category")),
                 resultSet.getBigDecimal("amount"),
                 resultSet.getString("description"),
-                resultSet.getObject("transaction_date", LocalDate.class)
+                resultSet.getObject("transaction_date", LocalDate.class),
+                resultSet.getTimestamp("created_at").toInstant()
         );
     }
 }
