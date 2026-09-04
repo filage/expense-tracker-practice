@@ -12,4 +12,6 @@
                  relativeToChangelogFile="true"/>
         <include file="changes/003-insert-test-data.sql"
                  relativeToChangelogFile="true"/>
+        <include file="changes/004-create-wallets.xml"
+                 relativeToChangelogFile="true"/>
 </databaseChangeLog>

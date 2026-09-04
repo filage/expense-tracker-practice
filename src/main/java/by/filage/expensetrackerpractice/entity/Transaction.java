@@ -5,6 +5,7 @@ import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.Positive;
 import lombok.Builder;
 import lombok.Getter;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -16,7 +17,12 @@ import java.util.UUID;
 @Table(name = "transactions")
 public class Transaction {
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "wallet_id")
+    private Wallet wallet;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -37,6 +43,7 @@ public class Transaction {
     @Column(nullable = false)
     private LocalDate transactionDate;
 
+    @CreationTimestamp
     @Column(nullable = false, updatable = false)
     private Instant createdAt;
 
@@ -44,14 +51,14 @@ public class Transaction {
     }
 
     @Builder
-    public Transaction(TransactionType type, TransactionCategory category, BigDecimal amount, String description, LocalDate transactionDate) {
-        id = UUID.randomUUID();
+    public Transaction(UUID id, TransactionType type, TransactionCategory category, BigDecimal amount, String description, LocalDate transactionDate, Instant createdAt) {
+        this.id = id;
         this.type = type;
         this.category = category;
         this.amount = amount;
         this.description = description;
         this.transactionDate = transactionDate;
-        this.createdAt = Instant.now();
+        this.createdAt = createdAt;
     }
 
     public void updateTransaction(TransactionType type, TransactionCategory category, BigDecimal amount, String description, LocalDate transactionDate) {
