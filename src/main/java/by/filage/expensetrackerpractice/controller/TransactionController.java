@@ -2,13 +2,15 @@ package by.filage.expensetrackerpractice.controller;
 
 import by.filage.expensetrackerpractice.dto.TransactionRequest;
 import by.filage.expensetrackerpractice.dto.TransactionResponse;
+import by.filage.expensetrackerpractice.entity.TransactionType;
 import by.filage.expensetrackerpractice.service.TransactionService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.math.BigDecimal;
 import java.util.UUID;
 
 @RestController
@@ -24,8 +26,14 @@ public class TransactionController {
     }
 
     @GetMapping
-    public List<TransactionResponse> getTransactions() {
-        return transactionService.getAllTransactions();
+    public Page<TransactionResponse> getTransactions(
+            @RequestParam(defaultValue = "transactionDate") String sortBy,
+            @RequestParam(defaultValue = "DESC") String order,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) TransactionType type,
+            @RequestParam(required = false) BigDecimal amount) {
+        return transactionService.getAllTransactions(sortBy, order, page, size, type, amount);
     }
 
     @GetMapping("/{id}")

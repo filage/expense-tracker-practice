@@ -2,6 +2,7 @@ package by.filage.expensetrackerpractice.dto;
 
 import by.filage.expensetrackerpractice.entity.TransactionCategory;
 import by.filage.expensetrackerpractice.entity.TransactionType;
+import by.filage.expensetrackerpractice.validation.CategoryRequiresDescriptionValidation;
 import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -12,6 +13,7 @@ import lombok.Setter;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+@CategoryRequiresDescriptionValidation
 @Getter
 @Setter
 public class TransactionRequest {

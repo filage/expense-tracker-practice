@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @Service
@@ -26,6 +27,7 @@ import java.util.UUID;
 public class TransactionService {
     private final TransactionRepository transactionRepository;
     private final TransactionMapper transactionMapper;
+    private static final Set<String> ALLOWED_SORT_FIELD = Set.of("transactionDate", "amount", "type", "category", "createdAt");
 
     public TransactionResponse createTransaction(TransactionRequest request) {
         if (!request.getCategory().getAllowedType().equals(request.getType()))
@@ -33,8 +35,18 @@ public class TransactionService {
         return transactionMapper.toResponse(transactionRepository.save(transactionMapper.toEntity(request)));
     }
 
-    public List<TransactionResponse> getAllTransactions() {
-        return transactionMapper.toResponseList(transactionRepository.findAll());
+    public Page<TransactionResponse> getAllTransactions(String sortBy, String order, int page, int size, TransactionType type, BigDecimal amount) {
+        validateSortBy(sortBy);
+        Sort.Direction sortDirection = Sort.Direction.fromString(order);
+        Sort sort = Sort.by(sortDirection, sortBy);
+        validatePagination(page, size);
+        Pageable pageable = PageRequest.of(page, size, sort);
+        Specification<Transaction> specification = ((root, query, criteriaBuilder) -> criteriaBuilder.conjunction());
+        if(type != null)
+            specification = specification.and(TransactionSpecification.hasType(type));
+        if(amount != null)
+            specification = specification.and(TransactionSpecification.hasMinAmount(amount));
+        return transactionRepository.findAll(specification, pageable).map(transactionMapper::toResponse);
     }
 
     public TransactionResponse getTransactionById(UUID id) {
@@ -59,7 +71,20 @@ public class TransactionService {
     }
 
     public Page<Transaction> findByTypeAndMinAmount(TransactionType type, BigDecimal minAmount, int page, int size) {
+        validatePagination(page, size);
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "transactionDate"));
         return transactionRepository.findByTypeAndAmountGreaterThanEqual(type, minAmount, pageable);
+    }
+
+    private void validatePagination(int page, int size) {
+        if(page < 0)
+            throw new IllegalArgumentException("Page must not be negative");
+        if(size < 1 || size > 100)
+            throw new IllegalArgumentException("Size must be between 1 and 100");
+    }
+
+    private void validateSortBy(String sortBy) {
+        if(!ALLOWED_SORT_FIELD.contains(sortBy))
+            throw new IllegalArgumentException("Unsupporetd sort type: " + sortBy);
     }
 }
