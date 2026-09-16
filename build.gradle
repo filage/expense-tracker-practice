@@ -32,6 +32,14 @@ dependencies {
     implementation "org.mapstruct:mapstruct:1.6.3"
     annotationProcessor "org.mapstruct:mapstruct-processor:1.6.3"
     implementation 'org.springframework.boot:spring-boot-starter-liquibase'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation project(':expense-tracker-greeting-starter')
+    implementation 'org.springframework.boot:spring-boot-starter-aspectj'
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:3.1.1'
+    testImplementation 'org.testcontainers:testcontainers-junit-jupiter'
+    testImplementation 'org.testcontainers:testcontainers-postgresql'
+    implementation 'org.springframework.boot:spring-boot-starter-kafka'
+    implementation 'org.springframework.boot:spring-boot-starter-amqp'
 }
 
 tasks.named('test') {

@@ -4,22 +4,18 @@ WORKDIR /workspace
 
 COPY gradlew settings.gradle build.gradle ./
 COPY gradle ./gradle
-
-RUN chmod +x gradlew
 COPY expense-tracker-greeting-starter ./expense-tracker-greeting-starter
 COPY expense-tracker-history-service ./expense-tracker-history-service
-RUN ./gradlew dependencies --no-daemon
 
-COPY src ./src
-
-RUN ./gradlew bootJar --no-daemon
+RUN chmod +x gradlew
+RUN ./gradlew :expense-tracker-history-service:bootJar --no-daemon
 
 FROM eclipse-temurin:21-jre-alpine-3.22
 
 WORKDIR /app
 
-COPY --from=build /workspace/build/libs/*.jar app.jar
+COPY --from=build /workspace/expense-tracker-history-service/build/libs/*.jar app.jar
 
-EXPOSE 8080
+EXPOSE 8081
 
 ENTRYPOINT ["java", "-jar", "app.jar"]

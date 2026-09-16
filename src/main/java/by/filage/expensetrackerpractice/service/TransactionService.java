@@ -8,6 +8,8 @@ import by.filage.expensetrackerpractice.entity.TransactionType;
 import by.filage.expensetrackerpractice.exception.TransactionNotFoundException;
 import by.filage.expensetrackerpractice.exception.TransactionTypeMismatchException;
 import by.filage.expensetrackerpractice.mapper.TransactionMapper;
+import by.filage.expensetrackerpractice.messaging.TransactionDeletedProducer;
+import by.filage.expensetrackerpractice.messaging.TransactionEventProducer;
 import by.filage.expensetrackerpractice.repository.TransactionRepository;
 import by.filage.expensetrackerpractice.validation.PaginationValidator;
 import lombok.AllArgsConstructor;
@@ -27,12 +29,19 @@ import java.util.UUID;
 public class TransactionService {
     private final TransactionRepository transactionRepository;
     private final TransactionMapper transactionMapper;
+    private final TransactionEventProducer transactionEventProducer;
+    private final TransactionDeletedProducer transactionDeletedProducer;
 
     public TransactionResponse createTransaction(TransactionRequest request) {
         if (!request.getCategory().getAllowedType().equals(request.getType())) {
             throw new TransactionTypeMismatchException();
         }
-        return transactionMapper.toResponse(transactionRepository.save(transactionMapper.toEntity(request)));
+
+        TransactionResponse response = transactionMapper.toResponse(transactionRepository.save(transactionMapper.toEntity(request)));
+
+        transactionEventProducer.sendCreated(response.getId());
+
+        return response;
     }
 
     public Page<TransactionResponse> getAllTransactions(Pageable pageable, TransactionType type, BigDecimal amount) {
@@ -62,7 +71,9 @@ public class TransactionService {
     }
 
     public void deleteTransaction(UUID id) {
-        transactionRepository.delete(transactionRepository.findById(id).orElseThrow(() -> new TransactionNotFoundException(id)));
+        Transaction transaction = transactionRepository.findById(id).orElseThrow(() -> new TransactionNotFoundException(id));
+        transactionRepository.delete(transaction);
+        transactionDeletedProducer.sendDeleted(id.toString());
     }
 
     public List<Transaction> findByTypeAndMinAmount(TransactionType type, BigDecimal minAmount) {
