@@ -1,5 +1,10 @@
 package by.filage.expensetrackerpractice.entity;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
+@Getter
+@RequiredArgsConstructor
 public enum TransactionCategory {
     FOOD(TransactionType.EXPENSE),
     TRANSPORT(TransactionType.EXPENSE),
@@ -17,12 +22,4 @@ public enum TransactionCategory {
     OTHER_EXPENSE(TransactionType.EXPENSE);
 
     private final TransactionType allowedType;
-
-    TransactionCategory(TransactionType allowedType) {
-        this.allowedType = allowedType;
-    }
-
-    public TransactionType getAllowedType() {
-        return allowedType;
-    }
 }
