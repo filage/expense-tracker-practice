@@ -1,1 +1,4 @@
 rootProject.name = 'expense-tracker-practice'
+
+include 'expense-tracker-greeting-starter'
+include 'expense-tracker-history-service'
